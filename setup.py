@@ -7,16 +7,16 @@ except(IOError, ImportError):
     long_description = open('README.md').read()
 
 setup(
-  name = 'doc_parser_transformers',         # How you named your package folder (MyLib)
-  packages = ['doc_parser_transformers'],   # Chose the same as "name"
+  name = 'doc_transformers',         # How you named your package folder (MyLib)
+  packages = ['doc_transformers'],   # Chose the same as "name"
   version = '0.1',      # Start with a small number and increase it with every change you make
   license='MIT',        # Chose a license from here: https://help.github.com/articles/licensing-a-repository
   description = 'Deep learning for document processing',   # Give a short description about your library
   long_description=long_description,
   author = 'Vishnu N',                   # Type in your name
   author_email = 'vishnunkumar25@gmail.com',      # Type in your E-Mail
-  url = 'https://github.com/Vishnunkumar/doc_parser_transformers/',   # Provide either the link to your github or to your website
-  download_url ='https://github.com/Vishnunkumar/doc_parser_transformers/archive/refs/tags/v-1.tar.gz',    # I explain this later on
+  url = 'https://github.com/Vishnunkumar/doc_transformers/',   # Provide either the link to your github or to your website
+  download_url ='https://github.com/Vishnunkumar/doc_transformers/archive/refs/tags/v-1.tar.gz',    # I explain this later on
   keywords = ['Documents', 'Machine learning', 'NLP', 'Deep learning', 'Computer Vision'],   # Keywords that define your package best
   install_requires = [            # I get to this in a second
           'transformers',
