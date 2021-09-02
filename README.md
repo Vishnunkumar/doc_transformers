@@ -19,3 +19,5 @@ im = form_parser.visualize_image(bbox, preds, image)
 ```
 
 ## Results
+![input image](ik.jpg)
+![output image](output.png)
