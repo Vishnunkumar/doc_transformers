@@ -27,3 +27,5 @@ im = form_parser.visualize_image(bbox, preds, image)
 **Output**
 
 ![output image](output.png)
+
+- Please note that this is still in development phase and will be improved in the near future
