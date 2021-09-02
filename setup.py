@@ -1,18 +1,11 @@
 from distutils.core import setup
 
-try:
-    import pypandoc
-    long_description = pypandoc.convert('README.md', 'rst')
-except(IOError, ImportError):
-    long_description = open('README.md').read()
-
 setup(
   name = 'doc_transformers',         # How you named your package folder (MyLib)
   packages = ['doc_transformers'],   # Chose the same as "name"
   version = '0.1',      # Start with a small number and increase it with every change you make
   license='MIT',        # Chose a license from here: https://help.github.com/articles/licensing-a-repository
   description = 'Deep learning for document processing',   # Give a short description about your library
-  long_description=long_description,
   author = 'Vishnu N',                   # Type in your name
   author_email = 'vishnunkumar25@gmail.com',      # Type in your E-Mail
   url = 'https://github.com/Vishnunkumar/doc_transformers/',   # Provide either the link to your github or to your website
@@ -21,7 +14,6 @@ setup(
   install_requires = [            # I get to this in a second
           'transformers',
           'pyyaml==5.1',
-          'detectron2 -f https://dl.fbaipublicfiles.com/detectron2/wheels/cu101/torch1.8/index.html',
           'torch==1.8.0',
           'torchvision==0.9.0',
           'datasets',
