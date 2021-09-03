@@ -1,6 +1,10 @@
 # Doc Transformers
 Document processing using transformers
 
+```
+pip install -q doc-transformers
+```
+
 ## Pre-requisites
 
 Please install the following seperately
