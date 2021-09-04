@@ -1,5 +1,5 @@
 # Doc Transformers
-Document processing using transformers
+Document processing using transformers. This is still in developmental phase, currently supports only extraction of form data i.e (key - value pairs)
 
 ```
 pip install -q doc-transformers
