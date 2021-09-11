@@ -57,7 +57,7 @@ def process_image(image):
   final_preds = []
 
   for i, j in enumerate(predictions):
-    if j not in [0, 1, 2]:
+    if j not in [0]:
       final_bbox.append(unnormalize_box(token_boxes[i], width, height))
       final_preds.append(id2label[j])
 
@@ -75,10 +75,11 @@ def visualize_image(final_bbox, final_preds, image):
   font = ImageFont.load_default()
   
   label2color = {'question':'blue', 'answer':'green', 'header':'orange', 'other':'violet'}
+  l2l = {'question':'key', 'answer':'value', 'header':'title'}
 
   for prediction, box in zip(final_preds, final_bbox):
       predicted_label = iob_to_label(prediction).lower()
       draw.rectangle(box, outline=label2color[predicted_label])
-      draw.text((box[0] + 10, box[1] - 10), text=predicted_label, fill=label2color[predicted_label], font=font)
+      draw.text((box[0] + 10, box[1] - 10), text=l2l[predicted_label], fill=label2color[predicted_label], font=font)
 
   return image
