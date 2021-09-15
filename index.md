@@ -1,37 +1,42 @@
-## Welcome to GitHub Pages
+# Doc Transformers
+Document processing using transformers. This is still in developmental phase, currently supports only extraction of form data i.e (key - value pairs)
 
-You can use the [editor on GitHub](https://github.com/Vishnunkumar/doc_transformers/edit/gh-pages/index.md) to maintain and preview the content for your website in Markdown files.
-
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
-
-### Markdown
-
-Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
-
-```markdown
-Syntax highlighted code block
-
-# Header 1
-## Header 2
-### Header 3
-
-- Bulleted
-- List
-
-1. Numbered
-2. List
-
-**Bold** and _Italic_ and `Code` text
-
-[Link](url) and ![Image](src)
+```
+pip install -q doc-transformers
 ```
 
-For more details see [GitHub Flavored Markdown](https://guides.github.com/features/mastering-markdown/).
+## Pre-requisites
 
-### Jekyll Themes
+Please install the following seperately
+```
+sudo apt install tesseract-ocr
+pip install -q detectron2 -f https://dl.fbaipublicfiles.com/detectron2/wheels/cu101/torch1.8/index.html
+```
 
-Your Pages site will use the layout and styles from the Jekyll theme you have selected in your [repository settings](https://github.com/Vishnunkumar/doc_transformers/settings/pages). The name of this theme is saved in the Jekyll `_config.yml` configuration file.
+## Implementation
 
-### Support or Contact
+```
+# loads the pretrained dataset also 
+from doc_transformers import form_parser
 
-Having trouble with Pages? Check out our [documentation](https://docs.github.com/categories/github-pages-basics/) or [contact support](https://support.github.com/contact) and we’ll help you sort it out.
+# loads the image
+image = form_parser.load_image(input_path_image)
+
+# gets the bounding boxes, predictions and image processed
+bbox, preds, image = form_parser.process_image(image)
+
+# returns image as the output
+im = form_parser.visualize_image(bbox, preds, image)
+```
+
+## Results
+
+**Input**
+
+![input image](ik.jpg) 
+
+**Output**
+
+![output image](output.png)
+
+- Please note that this is still in development phase and will be improved in the near future
