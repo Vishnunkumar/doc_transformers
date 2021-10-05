@@ -36,7 +36,7 @@ df_main = form_parser.process_form(df)
 
 **Input**
 
-![input image](ik.jpg) 
+![input image](bill7.png) 
 
 **Output**
 
