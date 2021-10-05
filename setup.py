@@ -17,7 +17,9 @@ setup(
           'torch==1.8.0',
           'torchvision==0.9.0',
           'datasets',
-          'pytesseract'
+          'pytesseract',
+          'pandas',
+          'numpy'
   ],
   classifiers=[
     'Development Status :: 3 - Alpha',      # Chose either "3 - Alpha", "4 - Beta" or "5 - Production/Stable" as the current state of your package
