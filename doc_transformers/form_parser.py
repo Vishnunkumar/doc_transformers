@@ -1,8 +1,10 @@
+import pandas as pd
+import numpy as np
+import pytesseract
+import torch
 from datasets import load_dataset 
 from PIL import Image, ImageDraw, ImageFont
 from transformers import LayoutLMv2FeatureExtractor, LayoutLMv2TokenizerFast
-import pytesseract
-import torch
 from transformers import LayoutLMv2ForTokenClassification
 
 datasets = load_dataset("nielsr/funsd")
@@ -48,20 +50,29 @@ def process_image(image):
 
   # forward pass
   outputs = model(**encoding)
-
+  is_subword = np.array(offset_mapping.squeeze().tolist())[:,0] != 0
   predictions = outputs.logits.argmax(-1).squeeze().tolist()
   token_boxes = encoding.bbox.squeeze().tolist()
 
   width, height = image.size
-  final_bbox = []
-  final_preds = []
+  true_predictions = [id2label[pred] for idx, pred in enumerate(predictions) if not is_subword[idx]]
+  true_boxes = [unnormalize_box(box, width, height) for idx, box in enumerate(token_boxes) if not is_subword[idx]]
 
-  for i, j in enumerate(predictions):
-    if j not in [0]:
-      final_bbox.append(unnormalize_box(token_boxes[i], width, height))
-      final_preds.append(id2label[j])
+  true_boxes = true_boxes[1:-1]
+  true_predictions = true_predictions[1:-1]
 
-  return final_bbox, final_preds, image
+  preds = []
+  l_words = []
+  bboxes = []
+
+  for i,j in enumerate(true_predictions):
+
+    if j != 'O':
+      preds.append(true_predictions[i])
+      l_words.append(words[0][i])
+      bboxes.append(true_boxes[i])
+
+  return bboxes, preds, l_words, image
 
 def iob_to_label(label):
   label = label[2:]
@@ -69,7 +80,7 @@ def iob_to_label(label):
     return 'other'
   return label
 
-def visualize_image(final_bbox, final_preds, image):
+def visualize_image(final_bbox, final_preds, l_words, image):
 
   draw = ImageDraw.Draw(image)
   font = ImageFont.load_default()
@@ -77,9 +88,54 @@ def visualize_image(final_bbox, final_preds, image):
   label2color = {'question':'blue', 'answer':'green', 'header':'orange', 'other':'violet'}
   l2l = {'question':'key', 'answer':'value', 'header':'title'}
 
-  for prediction, box in zip(final_preds, final_bbox):
-      predicted_label = iob_to_label(prediction).lower()
-      draw.rectangle(box, outline=label2color[predicted_label])
-      draw.text((box[0] + 10, box[1] - 10), text=l2l[predicted_label], fill=label2color[predicted_label], font=font)
+  json_df = []
 
-  return image
+  for ix, prediction, box in enumerate(zip(final_preds, final_bbox)):
+    predicted_label = iob_to_label(prediction).lower()
+    draw.rectangle(box, outline=label2color[predicted_label])
+    draw.text((box[0] + 10, box[1] - 10), text=l2l[predicted_label], fill=label2color[predicted_label], font=font)
+
+    json_dict = {}
+    json_dict['TEXT'] = l_words[ix]
+    json_dict['LABEL'] = f_labels[predicted_label]
+    
+    json_df.append(json_dict)
+
+  return image, json_df
+
+def process_form(json_df):
+
+  lst2 = []
+  lst1 = []
+  for i, j in enumerate(json_df):
+    if i + 1 == len(json_df):
+      break
+    
+    if json_df[i]['LABEL'] == json_df[i + 1]['LABEL']:
+      lst1.append(json_df[i])
+    
+    else:
+      lst1 = []
+      lst2.append(json_df[i])  
+    lst2.append(lst1)
+
+  lst3 = []
+  for x in lst2:
+    if x not in lst3:
+      if type(x) != list:
+        lst3.append([x])
+      else:
+        lst3.append(x)
+
+  df_main = pd.DataFrame()
+  u = 0
+  for x in lst3:
+    if x!= []:
+      df3 = pd.DataFrame(x)
+      df3['MARKER'] = u
+      df_main = df_main.append(df3)
+      u = u + 1
+
+  df = df_main.groupby(['MARKER','LABEL'])['TEXT'].apply(' '.join).reset_index()
+  
+  return df[['LABEL', 'TEXT']]
