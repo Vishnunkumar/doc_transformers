@@ -87,13 +87,14 @@ def visualize_image(final_bbox, final_preds, l_words, image):
   
   label2color = {'question':'blue', 'answer':'green', 'header':'orange', 'other':'violet'}
   l2l = {'question':'key', 'answer':'value', 'header':'title'}
+  f_labels = {'question':'key', 'answer':'value', 'header':'title', 'other':'others'}
 
   json_df = []
 
   for ix, (prediction, box) in enumerate(zip(final_preds, final_bbox)):
     predicted_label = iob_to_label(prediction).lower()
     draw.rectangle(box, outline=label2color[predicted_label])
-    draw.text((box[0] + 10, box[1] - 10), text=l2l[predicted_label], fill=label2color[predicted_label], font=font)
+    draw.text((box[0] + 10, box[1] - 10), text=f_labels[predicted_label], fill=label2color[predicted_label], font=font)
 
     json_dict = {}
     json_dict['TEXT'] = l_words[ix]
