@@ -34,13 +34,12 @@ df_main = form_parser.process_form(df)
 
 ## Results
 
-**Input**
+**Input & Output**
 
+<p float="left">
 <img src="/bill7.png" width="400" height="600">
-
-**Output**
-
 <img src="/output.png" width="400" height="600">
+</p>
 
 **Table**
 
