@@ -90,7 +90,7 @@ def visualize_image(final_bbox, final_preds, l_words, image):
 
   json_df = []
 
-  for ix, prediction, box in enumerate(zip(final_preds, final_bbox)):
+  for ix, (prediction, box) in enumerate(zip(final_preds, final_bbox)):
     predicted_label = iob_to_label(prediction).lower()
     draw.rectangle(box, outline=label2color[predicted_label])
     draw.text((box[0] + 10, box[1] - 10), text=l2l[predicted_label], fill=label2color[predicted_label], font=font)
