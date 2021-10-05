@@ -36,11 +36,11 @@ df_main = form_parser.process_form(df)
 
 **Input**
 
-![<img src="bill7.png" width="250" height="250">](bill7.png)
+![input_image](bill7.png){ width=50% height=50% }
 
 **Output**
 
-![output image](output.png)
+![output image](output.png){ width=50% height=50% }
 
 **Table**
 
