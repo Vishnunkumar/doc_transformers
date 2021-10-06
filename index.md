@@ -34,8 +34,8 @@ im = form_parser.visualize_image(bbox, preds, image)
 **Input & Output**
 
 <p float="left">
-<img src="/bill7.png" width="350" height="600">
-<img src="/output.png" width="350" height="600">
+<img src="bill7.png" width="350" height="600">
+<img src="output.png" width="350" height="600">
 </p>
 
 **Table**
