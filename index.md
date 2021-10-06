@@ -22,11 +22,14 @@ from doc_transformers import form_parser
 # loads the image
 image = form_parser.load_image(input_path_image)
 
-# gets the bounding boxes, predictions and image processed
-bbox, preds, image = form_parser.process_image(image)
+# gets the bounding boxes, predictions, extracted words and image processed
+bbox, preds, words, image = form_parser.process_image(image)
 
-# returns image as the output
-im = form_parser.visualize_image(bbox, preds, image)
+# returns image and extracted key-value pairs along with title as the output
+im, df = form_parser.visualize_image(bbox, preds, words, image)
+
+# process and returns k-v pairs by concatenating relevant strings.
+df_main = form_parser.process_form(df)
 ```
 
 ## Results
