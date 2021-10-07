@@ -37,7 +37,7 @@ def process_image(image):
   encoding_feature_extractor = feature_extractor(image, return_tensors="pt")
   words, boxes = encoding_feature_extractor.words, encoding_feature_extractor.boxes
 
-  encoding = tokenizer(words, boxes=boxes, return_offsets_mapping=True, return_tensors="pt")
+  encoding = tokenizer(words, boxes=boxes, return_offsets_mapping=True, return_tensors="pt", truncation=True)
   offset_mapping = encoding.pop('offset_mapping')
   encoding["image"] = encoding_feature_extractor.pixel_values
 
@@ -116,5 +116,10 @@ def process_form(json_df):
   grouper = lambda l: [[k] + sum((v[1::] for v in vs), []) for k, vs in groupby(l, lambda x: x[0])]
   
   list_final = grouper(cmb_list)
+  lst_final = []
+  for x in list_final:
+    json_dict = {}
+    json_dict[x[0]] = (' ').join(x[1:])
+    lst_final.append(json_dict)
   
-  return list_final
+  return lst_final
