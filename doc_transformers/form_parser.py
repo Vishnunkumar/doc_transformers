@@ -2,6 +2,7 @@ import pandas as pd
 import numpy as np
 import pytesseract
 import torch
+from itertools import groupby
 from datasets import load_dataset 
 from PIL import Image, ImageDraw, ImageFont
 from transformers import LayoutLMv2FeatureExtractor, LayoutLMv2TokenizerFast
@@ -106,37 +107,14 @@ def visualize_image(final_bbox, final_preds, l_words, image):
 
 def process_form(json_df):
 
-  lst2 = []
-  lst1 = []
-  for i, j in enumerate(json_df):
-    if i + 1 == len(json_df):
-      break
+  labels = [x['LABEL'] for x in json_df]
+  texts = [x['TEXT'] for x in json_df]
+  cmb_list = []
+  for i, j in enumerate(labels):
+    cmb_list.append([labels[i], texts[i]])
     
-    if json_df[i]['LABEL'] == json_df[i + 1]['LABEL']:
-      lst1.append(json_df[i])
-    
-    else:
-      lst1 = []
-      lst2.append(json_df[i])  
-    lst2.append(lst1)
-
-  lst3 = []
-  for x in lst2:
-    if x not in lst3:
-      if type(x) != list:
-        lst3.append([x])
-      else:
-        lst3.append(x)
-
-  df_main = pd.DataFrame()
-  u = 0
-  for x in lst3:
-    if x!= []:
-      df3 = pd.DataFrame(x)
-      df3['MARKER'] = u
-      df_main = df_main.append(df3)
-      u = u + 1
-
-  df = df_main.groupby(['MARKER','LABEL'])['TEXT'].apply(' '.join).reset_index()
+  grouper = lambda l: [[k] + sum((v[1::] for v in vs), []) for k, vs in groupby(l, lambda x: x[0])]
   
-  return df[['LABEL', 'TEXT']]
+  list_final = grouper(cmb_list)
+  
+  return list_final
