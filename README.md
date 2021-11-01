@@ -80,5 +80,8 @@ df_main = form_parser.process_form(df)
 | value | .69                                |
 | key   | Gratuity: Total:                   |
 
+## Code credits
+
+[@HuggingFace](https://huggingface.co/)
 
 - Please note that this is still in development phase and will be improved in the near future
