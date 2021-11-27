@@ -15,7 +15,7 @@ pip install -q detectron2 -f https://dl.fbaipublicfiles.com/detectron2/wheels/cu
 
 ## Implementation
 
-```
+```python
 # loads the pretrained dataset also 
 from doc_transformers import form_parser
 
