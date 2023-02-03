@@ -1,27 +1,41 @@
-from distutils.core import setup
+import setuptools
 
-setup(
-  name = 'doc_transformers',         # How you named your package folder (MyLib)
-  packages = ['doc_transformers'],   # Chose the same as "name"
-  version = '0.8',      # Start with a small number and increase it with every change you make
-  license='MIT',        # Chose a license from here: https://help.github.com/articles/licensing-a-repository
-  description = 'Deep learning for document processing',   # Give a short description about your library
-  author = 'Vishnu N',                   # Type in your name
-  author_email = 'vishnunkumar25@gmail.com',      # Type in your E-Mail
-  url = 'https://github.com/Vishnunkumar/doc_transformers/',   # Provide either the link to your github or to your website
-  download_url ='https://github.com/Vishnunkumar/doc_transformers/archive/refs/tags/v-8.tar.gz',    # I explain this later on
-  keywords = ['Documents', 'Machine learning', 'NLP', 'Deep learning', 'Computer Vision'],   # Keywords that define your package best
-  install_requires = [            # I get to this in a second
-          'transformers',
-          'pyyaml==5.1',
-          'torch==1.8.0',
-          'torchvision==0.9.0',
-          'datasets',
-          'pytesseract',
-          'pandas',
-          'numpy'
-  ],
-  classifiers=[
+with open("README.md", "r") as fh:
+    long_description = fh.read()
+
+requirements = [            
+  'transformers',
+  'pyyaml',
+  'torch',
+  'torchvision',
+  'datasets',
+  'pytesseract',
+  'pandas',
+  'numpy'
+]
+
+
+setuptools.setup(
+    name="doc_transformers",
+    version="0.9",
+    author="Vishnu Nandakumar",
+    author_email="nkumarvishnu25@gmail.com",
+    description="Deep learning for document processing",
+    long_description=long_description,
+    long_description_content_type="text/markdown",
+    url = 'https://github.com/Vishnunkumar/doc_transformers/',
+    packages=[
+        'doc_transformers',
+    ],
+    package_dir={'doc_transformers': 'doc_transformers'},
+    package_data={
+        'doc_transformers': ['doc_transformers/*.py']
+    },
+    install_requires=requirements,
+    license="MIT license",
+    zip_safe=False,
+    keywords='doc_transformers',
+    classifiers=(
     'Development Status :: 3 - Alpha',      # Chose either "3 - Alpha", "4 - Beta" or "5 - Production/Stable" as the current state of your package
     'Intended Audience :: Developers',      # Define that your audience are developers
     'Topic :: Software Development :: Build Tools',
@@ -30,5 +44,5 @@ setup(
     'Programming Language :: Python :: 3.4',
     'Programming Language :: Python :: 3.5',
     'Programming Language :: Python :: 3.6',
-  ],
+    ),
 )
