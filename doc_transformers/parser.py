@@ -84,48 +84,18 @@ def process_image(image, feature_extractor, processor, model, labels):
         json_dict["label"] = "VALUE"
       json_dict["value"] = words[0][i]
       key_pairs.append(json_dict)
+      bboxes.append(true_boxes[i])
   
-  return key_pairs
+  return key_pairs, bboxes
   
-def visualize_image(final_bbox, final_preds, l_words, image):
+def visualize_image(image, key_pairs, bboxes):
 
   draw = ImageDraw.Draw(image)
   font = ImageFont.load_default()
+  label2color = {'KEY':'blue', 'VALUE':'green', 'TITLE':'orange'}
   
-  label2color = {'question':'blue', 'answer':'green', 'header':'orange', 'other':'violet'}
-  l2l = {'question':'key', 'answer':'value', 'header':'title'}
-  f_labels = {'question':'key', 'answer':'value', 'header':'title', 'other':'others'}
+  for kp, box in enumerate(zip(key_pairs, bboxes)):
+    draw.rectangle(box, outline=label2color[kp['label']])
+    draw.text((box[0] + 10, box[1] - 10), text=kp['label'], fill=label2color[predicted_label], font=font)
 
-  json_df = []
-
-  for ix, (prediction, box) in enumerate(zip(final_preds, final_bbox)):
-    predicted_label = iob_to_label(prediction).lower()
-    draw.rectangle(box, outline=label2color[predicted_label])
-    draw.text((box[0] + 10, box[1] - 10), text=f_labels[predicted_label], fill=label2color[predicted_label], font=font)
-
-    json_dict = {}
-    json_dict['TEXT'] = l_words[ix]
-    json_dict['LABEL'] = f_labels[predicted_label]
-    
-    json_df.append(json_dict)
-
-  return image, json_df
-
-def process_form(json_df):
-
-  labels = [x['LABEL'] for x in json_df]
-  texts = [x['TEXT'] for x in json_df]
-  cmb_list = []
-  for i, j in enumerate(labels):
-    cmb_list.append([labels[i], texts[i]])
-    
-  grouper = lambda l: [[k] + sum((v[1::] for v in vs), []) for k, vs in groupby(l, lambda x: x[0])]
-  
-  list_final = grouper(cmb_list)
-  lst_final = []
-  for x in list_final:
-    json_dict = {}
-    json_dict[x[0]] = (' ').join(x[1:])
-    lst_final.append(json_dict)
-  
-  return lst_final
+  return image
