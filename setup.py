@@ -14,7 +14,7 @@ requirements = [
 
 setuptools.setup(
     name="doc_transformers",
-    version="1.0.1",
+    version="1.0.2",
     author="Vishnu Nandakumar",
     author_email="nkumarvishnu25@gmail.com",
     description="Deep learning for document processing",
