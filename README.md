@@ -30,18 +30,13 @@ from doc_transformers import parser
 
 # loads the image
 image = parser.load_image(input_path_image)
+labels = parser.load_tags()
 
 # loads the model
-processor, model = parser.load_models()
+fe, proc, mdl = parser.load_models()
 
 # gets the bounding boxes, predictions, extracted words and image processed
-bbox, preds, words, image = parser.process_image(image, processor, model)
-
-# returns image and extracted key-value pairs along with title as the output
-im, df = parser.visualize_image(bbox, preds, words, image)
-
-# process and returns k-v pairs by concatenating relevant strings.
-df_main = parser.process_form(df)
+kp = parser.process_image(image, fe, proc, mdl, lbls)
 ```
 
 ## Results
