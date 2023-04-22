@@ -3,15 +3,23 @@ import numpy as np
 import pytesseract
 import torch
 from itertools import groupby
-from datasets import load_dataset 
+from transformers import LayoutLMv3Processor, LayoutLMv3ForTokenClassification
+from datasets import load_dataset
 from PIL import Image, ImageDraw, ImageFont
-from transformers import LayoutLMv2FeatureExtractor, LayoutLMv2TokenizerFast
-from transformers import LayoutLMv2ForTokenClassification
 
 datasets = load_dataset("nielsr/funsd")
 labels = datasets['train'].features['ner_tags'].feature.names
 id2label = {v: k for v, k in enumerate(labels)}
 label2id = {k: v for v, k in enumerate(labels)}
+
+def load_models():
+  
+  processor = LayoutLMv3Processor.from_pretrained("microsoft/layoutlmv3-base")
+  model = LayoutLMv3ForTokenClassification.from_pretrained(
+      "nielsr/layoutlmv3-finetuned-funsd"
+  )
+  
+  return processor, model
 
 def load_image(path):
   
@@ -29,36 +37,34 @@ def unnormalize_box(bbox, width, height):
          height * (bbox[3] / 1000),
      ]
 
-def process_image(image):
+def process_image(image, processor, model):
   
-  feature_extractor = LayoutLMv2FeatureExtractor.from_pretrained("microsoft/layoutlmv2-base-uncased")
-  tokenizer = LayoutLMv2TokenizerFast.from_pretrained("microsoft/layoutlmv2-base-uncased")
+  width, height = image.size
 
-  encoding_feature_extractor = feature_extractor(image, return_tensors="pt")
-  words, boxes = encoding_feature_extractor.words, encoding_feature_extractor.boxes
-
-  encoding = tokenizer(words, boxes=boxes, return_offsets_mapping=True, return_tensors="pt", truncation=True)
-  offset_mapping = encoding.pop('offset_mapping')
-  encoding["image"] = encoding_feature_extractor.pixel_values
-
-  device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-  for k,v in encoding.items():
-    encoding[k] = v.to(device)
-
-  # load the fine-tuned model from the hub
-  model = LayoutLMv2ForTokenClassification.from_pretrained("nielsr/layoutlmv2-finetuned-funsd")
-  model.to(device)
+  # encode
+  encoding = processor(
+      image, truncation=True, return_offsets_mapping=True, return_tensors="pt"
+  )
+  offset_mapping = encoding.pop("offset_mapping")
 
   # forward pass
   outputs = model(**encoding)
-  is_subword = np.array(offset_mapping.squeeze().tolist())[:,0] != 0
+
+  # get predictions
   predictions = outputs.logits.argmax(-1).squeeze().tolist()
   token_boxes = encoding.bbox.squeeze().tolist()
 
-  width, height = image.size
-  true_predictions = [id2label[pred] for idx, pred in enumerate(predictions) if not is_subword[idx]]
-  true_boxes = [unnormalize_box(box, width, height) for idx, box in enumerate(token_boxes) if not is_subword[idx]]
-
+  # only keep non-subword predictions
+  is_subword = np.array(offset_mapping.squeeze().tolist())[:, 0] != 0
+  true_predictions = [
+      id2label[pred] for idx, pred in enumerate(predictions) if not is_subword[idx]
+  ]
+  true_boxes = [
+      unnormalize_box(box, width, height)
+      for idx, box in enumerate(token_boxes)
+      if not is_subword[idx]
+  ]
+  
   true_boxes = true_boxes[1:-1]
   true_predictions = true_predictions[1:-1]
 
