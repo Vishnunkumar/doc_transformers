@@ -28,15 +28,15 @@ pip install -q detectron2 -f https://dl.fbaipublicfiles.com/detectron2/wheels/cu
 # loads the pretrained dataset also 
 from doc_transformers import parser
 
-# loads the image
+# loads the image and labels
 image = parser.load_image(input_path_image)
 labels = parser.load_tags()
 
 # loads the model
-fe, proc, mdl = parser.load_models()
+feature_extractor, processor, model = parser.load_models()
 
 # gets the bounding boxes, predictions, extracted words and image processed
-kp = parser.process_image(image, fe, proc, mdl, lbls)
+kp = parser.process_image(image, feature_extractor, processor, model, labels)
 ```
 
 ## Results
