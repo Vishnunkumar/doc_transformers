@@ -5,9 +5,6 @@ with open("README.md", "r") as fh:
 
 requirements = [            
   'transformers',
-  'pyyaml==5.1',
-  'torch==1.8.0+cu101'
-  'torchvision==0.9.0+cu101',
   'datasets',
   'pytesseract',
   'pandas',
@@ -17,7 +14,7 @@ requirements = [
 
 setuptools.setup(
     name="doc_transformers",
-    version="0.9.1",
+    version="0.9.2",
     author="Vishnu Nandakumar",
     author_email="nkumarvishnu25@gmail.com",
     description="Deep learning for document processing",
