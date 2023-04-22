@@ -40,25 +40,16 @@ def unnormalize_box(bbox, width, height):
 def process_image(image, processor, model):
   
   width, height = image.size
-
-  # encode
-  encoding = processor(
-      image, truncation=True, return_offsets_mapping=True, return_tensors="pt"
-  )
+  encoding = processor(image, truncation=True, return_offsets_mapping=True, return_tensors="pt")
   offset_mapping = encoding.pop("offset_mapping")
 
-  # forward pass
   outputs = model(**encoding)
 
-  # get predictions
   predictions = outputs.logits.argmax(-1).squeeze().tolist()
   token_boxes = encoding.bbox.squeeze().tolist()
 
-  # only keep non-subword predictions
   is_subword = np.array(offset_mapping.squeeze().tolist())[:, 0] != 0
-  true_predictions = [
-      id2label[pred] for idx, pred in enumerate(predictions) if not is_subword[idx]
-  ]
+  true_predictions = [id2label[pred] for idx, pred in enumerate(predictions) if not is_subword[idx]]
   true_boxes = [
       unnormalize_box(box, width, height)
       for idx, box in enumerate(token_boxes)
