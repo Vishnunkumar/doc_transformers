@@ -5,9 +5,9 @@ with open("README.md", "r") as fh:
 
 requirements = [            
   'transformers',
-  'pyyaml',
-  'torch',
-  'torchvision',
+  'pyyaml==5.1',
+  'torch==1.8.0+cu101'
+  'torchvision==0.9.0+cu101',
   'datasets',
   'pytesseract',
   'pandas',
