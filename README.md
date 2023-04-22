@@ -17,19 +17,22 @@ pip install -q detectron2 -f https://dl.fbaipublicfiles.com/detectron2/wheels/cu
 
 ```python
 # loads the pretrained dataset also 
-from doc_transformers import form_parser
+from doc_transformers import parser
 
 # loads the image
-image = form_parser.load_image(input_path_image)
+image = parser.load_image(input_path_image)
+
+# loads the model
+processor, model = parser.load_models()
 
 # gets the bounding boxes, predictions, extracted words and image processed
-bbox, preds, words, image = form_parser.process_image(image)
+bbox, preds, words, image = parser.process_image(image, processor, model)
 
 # returns image and extracted key-value pairs along with title as the output
-im, df = form_parser.visualize_image(bbox, preds, words, image)
+im, df = parser.visualize_image(bbox, preds, words, image)
 
 # process and returns k-v pairs by concatenating relevant strings.
-df_main = form_parser.process_form(df)
+df_main = parser.process_form(df)
 ```
 
 ## Results
